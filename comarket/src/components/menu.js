@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Head from 'next/head';
-import web3 from '../../ethereum/contractinstances/web3';
+import web3 from '../../contractinstances/web3';
 import { useState } from 'react';
 
 
@@ -56,6 +56,12 @@ export default function Menu(){
                   </li>
                   <li className="mx-6 px-3 py-1 rounded-lg transition hover:bg-amber/50">
                     <Link href="/sell">Sell Commodities</Link>
+                  </li>
+                  <li className="mx-6 px-3 py-1 rounded-lg transition hover:bg-amber/50">
+                    <Link href="/">Create Options</Link>
+                  </li>
+                  <li className="mx-6 px-3 py-1 rounded-lg transition hover:bg-amber/50">
+                    <Link href="/">Buy Options</Link>
                   </li>
                 </ul>
               </nav>

@@ -1,6 +1,7 @@
 import Menu from "../components/menu"
 import React, { useState } from "react";
-import web3 from '../../ethereum/contractinstances/web3';
+import web3 from '../../contractinstances/web3';
+//import cotoken from '../../contracts/cotoken';
 
 
 export default function party () {
@@ -56,7 +57,7 @@ export default function party () {
                             <label htmlFor="description">Company</label>
                             <input onChange={(e) => setDescription(e.target.value)} placeholder="Company Name" id="price" className="placeholder:italic placeholder:text-amber/50 my-2 rounded bg-main/25 border py-1 pl-4 border-amber"/>
                         </div>
-                        <div className="flex flex-col items-center m-2 mt-10">
+                        <div className="flex flex-col items-center m-2">
                             <button onClick={createEventHandller} className="bg-main/50 text-dblue w-1/3 rounded hover:bg-main/75 active:bg-main/50">Create</button>
                         </div>
                         

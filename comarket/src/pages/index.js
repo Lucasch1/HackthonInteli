@@ -1,4 +1,4 @@
-import web3 from '../../ethereum/contractinstances/web3';
+import web3 from '../../contractinstances/web3';
 import Head from 'next/head';
 import { Inter } from 'next/font/google'
 import Menu from '../components/menu'
