@@ -54,7 +54,7 @@ export default function party () {
                         </div>
                         
                         <div className="flex flex-col m-2">
-                            <label htmlFor="description">Company(symbol)</label>
+                            <label htmlFor="description">Company</label>
                             <input onChange={(e) => setDescription(e.target.value)} placeholder="Company Name" id="price" className="placeholder:italic placeholder:text-amber/50 my-2 rounded bg-main/25 border py-1 pl-4 border-amber"/>
                         </div>
                         <div className="flex flex-col items-center m-2">

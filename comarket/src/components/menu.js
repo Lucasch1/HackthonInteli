@@ -42,7 +42,7 @@ export default function Menu(){
         </Head>
         <div className="w-full h-20 bg-main/75 absolute">
           <header className="w-full max-w-screen-2xl h-20 mx-auto px-20 flex items-center text-white">
-            <div className="mr-20">
+            <div className="mr-20 text-3xl font-bold">
               <Link href="/">COMARKET</Link>
             </div>
             <div className="w-full flex items-center justify-between">
@@ -58,10 +58,10 @@ export default function Menu(){
                     <Link href="/sell">Sell Commodities</Link>
                   </li>
                   <li className="mx-6 px-3 py-1 rounded-lg transition hover:bg-amber/50">
-                    <Link href="/">Create Options</Link>
+                    <Link href="/option">Create Options</Link>
                   </li>
                   <li className="mx-6 px-3 py-1 rounded-lg transition hover:bg-amber/50">
-                    <Link href="/">Buy Options</Link>
+                    <Link href="/negociations">Buy Options</Link>
                   </li>
                 </ul>
               </nav>
