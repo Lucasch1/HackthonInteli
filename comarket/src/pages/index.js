@@ -1,118 +1,184 @@
-import Image from 'next/image'
+import web3 from '../../ethereum/contractinstances/web3';
+import Head from 'next/head';
 import { Inter } from 'next/font/google'
+import Menu from '../components/menu'
+import { useState, useEffect } from 'react';
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+
+  const [error, setError] = useState('');
+  const [parties, setParties] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [location, setLocation] = useState('');
+  const [date, setDate] = useState('');
+  const [price, setPrice] = useState('');
+  const [address, setAddress] = useState(null);
+  const [partychainInstance, setPartyChainInstance] = useState(null);
+  const [eventokenInstance, setEvenTokenInstance] = useState(null);
+  const [partyId, setPartyId] = useState('');
+  const [amount, setAmount] = useState('');
+  const [partyChainAdress, setPartyChainAdress] = useState('');
+  const [iAmIn, setiAmIn] = useState(null);
+  const [partyIdd, setPartyIdd] = useState(0);
+
+  useEffect(() => {
+    if (partychainInstance) getPartiesHanddler()
+  }, [partychainInstance]);
+
+  const connectWalletHandler = async () => {  
+    /* verificar se a metamask esta disponivel */
+    try {
+      /* pedir o wallet connect */
+      await window.ethereum.request({ method: "eth_requestAccounts" })
+      /* pegar a lista de contas */
+      const accounts = await web3.eth.getAccounts()
+      console.log(accounts);
+      setAddress(accounts[0]);
+
+      /* criar uma copia local dos contratos */
+      const pc = partyChainContract(web3);
+      const evnt = evenTokenContract(web3);
+      setEvenTokenInstance(evnt);
+      setPartyChainInstance(pc);
+    } 
+    catch(err) {
+      setError(err.message);
+    }
+  }
+
+  
+
+  const getPartiesHanddler = async () => {
+    const party = await partychainInstance.methods.getParties().call()
+    setParties(party)
+  }
+  
+  
+  const createEventHandler = async () => {
+    await partychainInstance.methods.createEvent(name, description, location, date, price).send({
+      from: address
+    });
+  }
+
+  
+  const setPartyChainAdressHandler = async () => {
+    await eventokenInstance.methods.setContractaddress(partyChainAdress).send({
+      from: address
+    });
+  }
+  
+  const attendPartyHandler = async () => {
+    await partychainInstance.methods.attendParty(partyId).send({
+      from: address
+    });
+  }
+
+  const approvePartyChainHandler = async () => {
+    await eventokenInstance.methods.aprovePartyChain(amount).send({
+      from:address
+    });
+  }
+
+  const amiinthePartyHandler = async () => {
+    const In = await partychainInstance.methods.amIntheParty(partyIdd).call({
+      from: address
+    });
+    setiAmIn(In);
+  };
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/pages/index.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+      <Menu/>
+      <section className="h-screen w-full bg-white">
+        <div>
+          <h1>PartyChain Test Page</h1>
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
+        <div className='my-2'>
+          <h3>Here are some simple buttons that can call some functions of the contracts</h3>
+        </div>
+        <button onClick={connectWalletHandler} className='bg-green-500 border-solid border-gray-500 border my-1 px-1 py-1 text-center rounded hover:bg-gray-400  '>Connect</button>
+        <section className='w '>
+          <p className='text-yellow-300  '>
+            Those are all the events created: {parties}
           </p>
-        </a>
+        </section>
+        <section>
+          <div>
+            <label>Create Event</label>
+            <div>
+              <input onChange={(e) => setName(e.target.value)} placeholder='Enter the name' className='text-black'/> 
+              <input onChange={(e) => setDescription(e.target.value)} placeholder='Enter the description' className='text-black'/>
+              <input onChange={(e) => setLocation(e.target.value)} placeholder='Enter the location' className='text-black'/>
+              <input onChange={(e) => setDate(e.target.value)} placeholder='Enter the date' className='text-black'/>
+              <input onChange={(e) => setPrice(e.target.value)} placeholder='Enter the price' className='text-black'/>
+            </div>
+          </div>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+          <button onClick={createEventHandler} className='bg-green-500 border-solid border-gray-500 border my-1 px-1 py-1 text-center rounded hover:bg-gray-400  '>Create Event</button>
+        </section>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
+        <section>
+          <div>
+            <label>Set PartyChain address on EvenToken (Only Owner)</label>
+            <div>
+              <input onChange={(e) => setPartyChainAdress(e.target.value)} placeholder='Enter the PartyChain adress' className='text-black'/> 
+            </div>
+          </div>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+          <button onClick={setPartyChainAdressHandler} className='bg-green-500 border-solid border-gray-500 border my-1 px-1 py-1 text-center rounded hover:bg-gray-400  '>Set PartyChain Address</button>
+        </section>
+
+
+
+        <section>
+          <div>
+            <label>Aprove PartyChain</label>
+            <div>
+              <input onChange={(e) => setAmount(e.target.value)} placeholder='Enter the amount (EVNT)' className='text-black' /> 
+            </div>
+          </div>
+
+          <button onClick={approvePartyChainHandler} className='bg-green-500 border-solid border-gray-500 border my-1 px-1 py-1 text-center rounded hover:bg-gray-400  '>Aprove PartyChain</button>
+        </section>
+
+        <section>
+          <div>
+            <label>Attend Party</label>
+            <div>
+              <input onChange={(e) => setPartyId(e.target.value)} placeholder='Enter the party ID' className='text-black' /> 
+            </div>
+          </div>
+
+          <button onClick={attendPartyHandler} className='bg-green-500 border-solid border-gray-500 border my-1 px-1 py-1 text-center rounded hover:bg-gray-400  '>Attend Party</button>
+        </section>
+
+
+        <section>
+          <div>
+            <label>Am i in the Party?</label>
+            <div>
+              <input onChange={(e) => setPartyIdd(e.target.value)} placeholder='Enter the party ID' className='text-black'/> 
+            </div>
+          </div>
+
+          <button onClick={amiinthePartyHandler} className='bg-green-500 border-solid border-gray-500 border my-1 px-1 py-1 text-center rounded hover:bg-gray-400  '>Am i in?</button>
+          <section>
+            {iAmIn ? (
+              <p>At the party: {partyIdd}!</p>
+            ) : (
+              <p>Sorry, you're not at the party.</p>
+            )}
+          </section>
+        </section>
+        
+        <section>
+          <p>{error}</p>
+        </section>
+      </section>
+    </>
+   
   )
 }
