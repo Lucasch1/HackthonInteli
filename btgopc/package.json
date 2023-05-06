@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chainlink/contracts": "^0.6.1",
+    "@openzeppelin/contracts": "^4.8.3",
     "next": "13.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
