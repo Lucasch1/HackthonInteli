@@ -103,23 +103,6 @@ plt.show()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #configurar dados
 print(df.head())
 plt.style.use('seaborn')
@@ -127,14 +110,6 @@ plt.plot(df['BTC %'])
 plt.plot(df['ETH %'])
 #plt.yscale("log")
 plt.show()
-
-
-
-
-
-
-
-
 
 
 
